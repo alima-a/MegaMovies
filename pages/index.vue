@@ -37,6 +37,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import favoriteMovies from '../utils/favoriteMovies';
+import textFilters from '../utils/textFilters';
 export default {
   layout: 'default',
   components: {},
@@ -49,8 +50,10 @@ export default {
     }
   },
   fetch: async function ({store, params}) { // пример https://nuxtjs.org/api/pages-fetch/
-    await store.dispatch('movies-list/fetchMovies');
-    await store.dispatch('genres/fetchGenres')
+    await Promise.all([
+      store.dispatch('movies-list/fetchMovies'),
+      store.dispatch('genres/fetchGenres')
+    ]);
   },
   methods: {
     // обратить внимание
@@ -76,21 +79,13 @@ export default {
     }
   },
   filters: {
-      minify: function (value) {
-        if (!value) return '';
-        value = value.toString();
-        if(value.length < 100) {
-          return value.slice(0, 99)
-        } else {
-          return value.slice(0, 99) + "..."
-        }
-      },
-      date: function (value) {
-        if (!value) return '';
-        value = value.toString();
-        return value.slice(0, 4)
-      }
-  }
+    minify: function (value) {
+      return textFilters.minifyText(value)
+    },
+    date: function (value) {
+      return textFilters.minifyDate(value)
+    }
+  },
 }
 </script>
 <style>

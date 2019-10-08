@@ -77,6 +77,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import favoriteMovies from '../../utils/favoriteMovies';
+  import textFilters from '../../utils/textFilters';
   export default {
     layout: 'default',
     name: "movie-details",
@@ -115,28 +116,22 @@
     },
     fetch: async function ({store, params}) { // пример https://nuxtjs.org/api/pages-fetch/
       //index - названия параметра в маршруте
-      console.log(params);
-      await store.dispatch('genres/fetchGenres');
-      await store.dispatch('movie-details/fetchCredits', {movieId: params.index});
-      await store.dispatch('movie-details/fetchMovie', {movieId: params.index});
-      await store.dispatch('movie-details/fetchSimilarMovies', {movieId: params.index})
-    },
+      // console.log(params);
+      await Promise.all([
+        store.dispatch('movie-details/fetchCredits', {movieId: params.index}),
+        store.dispatch('movie-details/fetchMovie', {movieId: params.index}),
+        store.dispatch('movie-details/fetchSimilarMovies', {movieId: params.index}),
+        store.dispatch('genres/fetchGenres')
+    ])
+  },
     filters: {
       minify: function (value) {
-        if (!value) return '';
-        value = value.toString();
-        if(value.length < 100) {
-          return value.slice(0, 99)
-        } else {
-          return value.slice(0, 99) + "..."
-        }
+        return textFilters.minifyText(value)
       },
       date: function (value) {
-        if (!value) return '';
-        value = value.toString();
-        return value.slice(0, 4)
+        return textFilters.minifyDate(value)
       }
-    }
+    },
   }
 </script>
 

@@ -20,6 +20,8 @@
               <p class="card-text">
                 <small class="text-muted"> Год выхода: {{ movie.release_date | date }}</small>
               </p>
+              <b-button v-if="isMovieInFavorites(movie.id)" variant="info" class="float-right mb-1  favorite-btn" @click="onDelFromFavorites(movie.id)">Удалить из избранного</b-button>
+              <b-button v-else variant="info" class="float-right mb-1 favorite-btn" @click="onAddToFavorites(movie)">В избранное</b-button>
             </div>
           </div>
         </div>
@@ -30,6 +32,7 @@
 
 <script>
 import favoriteMovies from '../utils/favoriteMovies';
+import textFilters from '../utils/textFilters';
 export default {
   layout: 'default',
   components: {},
@@ -42,7 +45,7 @@ export default {
     onAddToFavorites(movie) {
       favoriteMovies.addToFavourites(movie);
 
-      this.$forceUpdate(); // обновляем компонент
+     // this.$forceUpdate(); //не желательно использовать принудительное обновление
     },
     isMovieInFavorites(movieId) {
       return favoriteMovies.isFavourite(movieId);
@@ -55,18 +58,10 @@ export default {
   },
   filters: {
     minify: function (value) {
-      if (!value) return '';
-      value = value.toString();
-      if(value.length < 100) {
-        return value.slice(0, 99)
-      } else {
-        return value.slice(0, 99) + "..."
-      }
+      return textFilters.minifyText(value)
     },
     date: function (value) {
-      if (!value) return '';
-      value = value.toString();
-      return value.slice(0, 4)
+      return textFilters.minifyDate(value)
     }
   },
   mounted() {

@@ -10,6 +10,7 @@ export default {
         movies = JSON.parse(movies);
 
         movies.push(movie);
+       // movies = Array.from(movies); // не сработало
       } catch (e) {
         console.error('Ошибка парсинга массива', e);
       }
@@ -40,6 +41,7 @@ export default {
         movies = JSON.parse(movies);
 
         movies = movies.filter(movie => { return movieId !== movie.id });
+        movies = Array.from(movies);
       } catch (e) {
         console.error('Ошибка парсинга массива', e);
       }
